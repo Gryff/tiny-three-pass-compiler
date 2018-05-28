@@ -9,4 +9,4 @@ data AST = Imm Int
          deriving (Eq, Show)
 
 pass1 :: String -> AST
-pass1 x = Imm 1
+pass1 x = Imm $ read (last (words x))
