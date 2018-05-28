@@ -14,7 +14,18 @@ data Token = TChar Char
            deriving (Eq, Show)
 
 pass1 :: String -> AST
-pass1 x = Imm $ read (last (words x))
+pass1 x = pass1' $ tokenise x
+
+pass1' :: [Token] -> AST
+pass1' ts = tokenToAst (head $ filter isInt ts)
+
+tokenToAst :: Token -> AST
+tokenToAst  (TInt t) = Imm t
+tokenToAst _ = Imm 1
+
+isInt :: Token -> Bool
+isInt (TInt _) = True
+isInt _ = False
 
 tokenise :: String -> [Token]
 tokenise  [] = []
