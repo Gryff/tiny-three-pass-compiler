@@ -19,7 +19,7 @@ pass1 :: String -> AST
 pass1 = pass1' . tokenise . last . (splitOn "]")
 
 pass1' :: [Token] -> AST
-pass1' (t:ts) = tokenToAst t
+pass1' ts = head $ map tokenToAst ts
 
 tokenToAst :: Token -> AST
 tokenToAst (TInt t) = Imm t
