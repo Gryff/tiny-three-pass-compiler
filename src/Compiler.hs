@@ -19,10 +19,10 @@ pass1 :: String -> AST
 pass1 = pass1' . tokenise . last . (splitOn "]")
 
 pass1' :: [Token] -> AST
-pass1' ts = tokenToAst (head $ filter isInt ts)
+pass1' (t:ts) = tokenToAst t
 
 tokenToAst :: Token -> AST
-tokenToAst  (TInt t) = Imm t
+tokenToAst (TInt t) = Imm t
 tokenToAst _ = Imm 1
 
 isInt :: Token -> Bool
