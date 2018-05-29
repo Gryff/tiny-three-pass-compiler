@@ -1,5 +1,7 @@
 module Compiler (pass1, AST (..))  where
 
+import Data.List.Split
+
 data AST = Imm Int
          | Arg Int
          | Add AST AST
@@ -14,7 +16,7 @@ data Token = TChar Char
            deriving (Eq, Show)
 
 pass1 :: String -> AST
-pass1 x = pass1' $ tokenise x
+pass1 = pass1' . tokenise . last . (splitOn "]")
 
 pass1' :: [Token] -> AST
 pass1' ts = tokenToAst (head $ filter isInt ts)
