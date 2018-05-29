@@ -25,10 +25,6 @@ tokenToAst :: Token -> AST
 tokenToAst (TInt t) = Imm t
 tokenToAst _ = Imm 1
 
-isInt :: Token -> Bool
-isInt (TInt _) = True
-isInt _ = False
-
 tokenise :: String -> [Token]
 tokenise  [] = []
 tokenise xxs@(c:cs)
