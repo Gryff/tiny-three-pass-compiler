@@ -21,6 +21,7 @@ pass1 = pass1' . tokenise . last . (splitOn "]")
 pass1' :: [Token] -> AST
 pass1' (TInt x : []) = Imm x
 pass1' (TInt x : TChar '-' : ts) = Sub (Imm x) (pass1' ts)
+pass1' (TInt x : TChar '+' : ts) = Add (Imm x) (pass1' ts)
 pass1' _ = undefined
 
 tokenToAst :: Token -> AST

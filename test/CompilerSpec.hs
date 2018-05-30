@@ -22,3 +22,7 @@ spec = do
       pass1 "[] 1 - 2 - 3" `shouldBe` (Sub (Imm 1) (Sub (Imm 2) (Imm 3)))
       pass1 "[] 1 - 2 - 3 - 4" `shouldBe` (Sub (Imm 1) (Sub (Imm 2) (Sub (Imm 3) (Imm 4))))
 
+    it "deals with addition (no arguments)" $ do
+      pass1 "[] 1 + 2" `shouldBe` (Add (Imm 1) (Imm 2))
+      pass1 "[] 1 + 2 + 3" `shouldBe` (Add (Imm 1) (Add (Imm 2) (Imm 3)))
+
