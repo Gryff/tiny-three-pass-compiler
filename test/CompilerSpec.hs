@@ -37,3 +37,6 @@ spec = do
     it "can add and subtract in the same expression" $ do
       pass1 "[] 1 - 2 + 3" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Imm 3)))
 
+    it "can mix all the operations" $ do
+      pass1 "[] 1 - 2 + 3 * 4 / 5" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Mul (Imm 3) (Div (Imm 4) (Imm 5)))))
+
