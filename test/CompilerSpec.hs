@@ -26,3 +26,6 @@ spec = do
       pass1 "[] 1 + 2" `shouldBe` (Add (Imm 1) (Imm 2))
       pass1 "[] 1 + 2 + 3" `shouldBe` (Add (Imm 1) (Add (Imm 2) (Imm 3)))
 
+    it "can add and subtract in the same expression" $ do
+      pass1 "[] 1 - 2 + 3" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Imm 3)))
+
