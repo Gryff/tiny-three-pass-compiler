@@ -1,4 +1,4 @@
-module Compiler (pass1, AST (..))  where
+module Compiler (pass1, AST (..), Token (..))  where
 
 import Data.List.Split
 
@@ -19,7 +19,9 @@ pass1 :: String -> AST
 pass1 = pass1' . tokenise . last . (splitOn "]")
 
 pass1' :: [Token] -> AST
-pass1' ts = head $ map tokenToAst ts
+pass1' (TInt x : []) = Imm x
+pass1' (TInt x : TChar '-' : TInt y : ts) = Sub (Imm x) (Imm y)
+pass1' _ = undefined
 
 tokenToAst :: Token -> AST
 tokenToAst (TInt t) = Imm t

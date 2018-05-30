@@ -15,3 +15,6 @@ spec = do
       pass1 "[] 1" `shouldBe` (Imm 1)
       pass1 "[] 3" `shouldBe` (Imm 3)
 
+    it "deals with simple subtraction (no arguments)" $ do
+      pass1 "[] 1 - 2" `shouldBe` (Sub (Imm 1) (Imm 2))
+
