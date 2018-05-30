@@ -23,6 +23,7 @@ pass1' (TInt x : []) = Imm x
 pass1' (TInt x : TChar '-' : ts) = Sub (Imm x) (pass1' ts)
 pass1' (TInt x : TChar '+' : ts) = Add (Imm x) (pass1' ts)
 pass1' (TInt x : TChar '*' : ts) = Mul (Imm x) (pass1' ts)
+pass1' (TInt x : TChar '/' : ts) = Div (Imm x) (pass1' ts)
 pass1' _ = undefined
 
 tokenise :: String -> [Token]

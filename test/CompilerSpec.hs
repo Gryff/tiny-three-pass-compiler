@@ -30,6 +30,10 @@ spec = do
       pass1 "[] 1 * 2" `shouldBe` (Mul (Imm 1) (Imm 2))
       pass1 "[] 1 * 2 * 3" `shouldBe` (Mul (Imm 1) (Mul (Imm 2) (Imm 3)))
 
+    it "deals with division (no arguments)" $ do
+      pass1 "[] 1 / 2" `shouldBe` (Div (Imm 1) (Imm 2))
+      pass1 "[] 1 / 2 / 3" `shouldBe` (Div (Imm 1) (Div (Imm 2) (Imm 3)))
+
     it "can add and subtract in the same expression" $ do
       pass1 "[] 1 - 2 + 3" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Imm 3)))
 
