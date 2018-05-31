@@ -45,3 +45,6 @@ spec = do
       pass1 "[x y] x" `shouldBe` (Arg 0)
       pass1 "[x y] y" `shouldBe` (Arg 1)
 
+    it "can use arguments in the expressions" $ do
+      pass1 "[x] x + 1" `shouldBe` (Add (Arg 0) (Imm 1))
+

@@ -30,12 +30,17 @@ pass1arguments ts = foldl storeArg Map.empty (zip [0..] ts)
 
 pass1' :: Map.Map Token AST -> [Token] -> AST
 pass1' _ (TInt x : []) = Imm x
-pass1' args (TInt x : TChar '-' : ts) = Sub (Imm x) (pass1' args ts)
-pass1' args (TInt x : TChar '+' : ts) = Add (Imm x) (pass1' args ts)
-pass1' args (TInt x : TChar '*' : ts) = Mul (Imm x) (pass1' args ts)
-pass1' args (TInt x : TChar '/' : ts) = Div (Imm x) (pass1' args ts)
+pass1' args (x : TChar '-' : ts) = Sub (tokenToAst x args) (pass1' args ts)
+pass1' args (x : TChar '+' : ts) = Add (tokenToAst x args) (pass1' args ts)
+pass1' args (x : TChar '*' : ts) = Mul (tokenToAst x args) (pass1' args ts)
+pass1' args (x : TChar '/' : ts) = Div (tokenToAst x args) (pass1' args ts)
 pass1' args (var : []) = args Map.! var
 pass1' _ _ = undefined
+
+tokenToAst :: Token -> Map.Map Token AST -> AST
+tokenToAst (TInt x) _ = Imm x
+tokenToAst (TStr s) args = args Map.! (TStr s)
+tokenToAst _ _ = undefined
 
 tokenise :: String -> [Token]
 tokenise  [] = []
