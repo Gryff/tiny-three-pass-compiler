@@ -49,3 +49,7 @@ spec = do
       pass1 "[x] x + 1" `shouldBe` (Add (Arg 0) (Imm 1))
       pass1 "[zz] zz * 8" `shouldBe` (Mul (Arg 0) (Imm 8))
 
+    it "can use arguments with other arguments in the expressions" $ do
+      pass1 "[x y] x + y" `shouldBe` (Add (Arg 0) (Arg 1))
+      pass1 "[x y z] z + y - 1" `shouldBe` (Add (Arg 2) (Sub (Arg 1) (Imm 1)))
+
