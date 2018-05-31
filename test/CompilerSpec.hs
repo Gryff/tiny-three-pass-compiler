@@ -47,4 +47,5 @@ spec = do
 
     it "can use arguments in the expressions" $ do
       pass1 "[x] x + 1" `shouldBe` (Add (Arg 0) (Imm 1))
+      pass1 "[zz] zz * 8" `shouldBe` (Mul (Arg 0) (Imm 8))
 
