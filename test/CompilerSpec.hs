@@ -40,3 +40,8 @@ spec = do
     it "can mix all the operations" $ do
       pass1 "[] 1 - 2 + 3 * 4 / 5" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Mul (Imm 3) (Div (Imm 4) (Imm 5)))))
 
+    it "can return arguments" $ do
+      pass1 "[x] x" `shouldBe` (Arg 0)
+      pass1 "[x y] x" `shouldBe` (Arg 0)
+      pass1 "[x y] y" `shouldBe` (Arg 1)
+
