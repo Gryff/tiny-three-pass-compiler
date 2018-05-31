@@ -1,4 +1,4 @@
-module Compiler (pass1, AST (..), Token (..))  where
+module Compiler (pass1, AST (..))  where
 
 import Data.List.Split
 import qualified Data.Map.Strict as Map
