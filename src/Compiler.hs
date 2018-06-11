@@ -1,7 +1,15 @@
+{-# LANGUAGE FlexibleContexts #-}
+{-# LANGUAGE NoMonomorphismRestriction #-}
+
 module Compiler (pass1, AST (..))  where
 
-import Data.List.Split
+import Data.List (elemIndex)
+import qualified Data.List.Split as S
 import qualified Data.Map.Strict as Map
+import Text.Parsec
+import Text.Parsec.Language
+import Text.Parsec.Expr
+import Text.Parsec.Token
 
 data AST = Imm Int
          | Arg Int
@@ -19,8 +27,8 @@ data Token = TChar Char
 pass1 :: String -> AST
 pass1 x = pass1' arguments body
   where
-    arguments = (pass1arguments . tokenise . tail . head . (splitOn "]")) x
-    body = (tokenise . last . (splitOn "]")) x
+    arguments = (pass1arguments . tokenise . tail . head . (S.splitOn "]")) x
+    body = (tokenise . last . (S.splitOn "]")) x
 
 pass1arguments :: [Token] -> Map.Map Token AST
 pass1arguments ts = foldl storeArg Map.empty (zip [0..] ts)
@@ -42,6 +50,45 @@ tokenToAst (TInt x) _ = Imm x
 tokenToAst (TStr s) args = args Map.! (TStr s)
 tokenToAst _ _ = undefined
 
+toAst :: String -> AST
+toAst s = pass1' Map.empty (tokenise s)
+
+expression :: Monad m => ParsecT String [String] m AST
+expression = buildExpressionParser operatorTable factor <?> "expression parse failed"
+
+operatorTable =
+  [
+    [op "/" (Div) AssocLeft],
+    [op "*" (Mul) AssocLeft],
+    [op "+" (Add) AssocLeft],
+    [op "-" (Sub) AssocLeft]
+  ]
+  where op s f assoc = Infix (do{ string s; return f}) assoc
+
+factor = mybraces <|> arg <|> number <?> "failed at factor"
+
+mybraces = toAst <$> between (char '(') (char ')') (many1 (digit <|> oneOf "-+*/"))
+
+mybrackets = between (char '[') (char ']') argsList <?> "failed at braces"
+
+argsList = do
+  args <- spaces *> sepBy (many1 letter) spaces
+  setState args
+  return $ Imm 1
+
+arg :: Monad m => ParsecT String [String] m AST
+arg = do
+  arg <- many1 letter
+  argsList <- getState
+  return $ idx (elemIndex arg argsList)
+  where
+    idx (Just x) = Arg x
+    idx Nothing = error "this should not happen"
+
+number = digitToToken <$> (many1 digit) <?> "failed at number"
+
+digitToToken = ((\t -> tokenToAst t Map.empty) . TInt . read)
+
 tokenise :: String -> [Token]
 tokenise  [] = []
 tokenise xxs@(c:cs)
@@ -50,10 +97,10 @@ tokenise xxs@(c:cs)
   | not (null s) = TStr s : tokenise ss
   | otherwise = tokenise cs
   where
-    (i, is) = span (`elem` digit) xxs
+    (i, is) = span (`elem` digits) xxs
     (s, ss) = span (`elem` alpha) xxs
 
-alpha, digit :: String
-alpha = ['a'..'s'] ++ ['A'..'z']
-digit = ['0'..'9']
+alpha, digits :: String
+alpha = ['a'..'z'] ++ ['A'..'z']
+digits = ['0'..'9']
 

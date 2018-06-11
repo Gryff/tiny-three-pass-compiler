@@ -53,3 +53,8 @@ spec = do
       pass1 "[x y] x + y" `shouldBe` (Add (Arg 0) (Arg 1))
       pass1 "[x y z] z + y - 1" `shouldBe` (Add (Arg 2) (Sub (Arg 1) (Imm 1)))
 
+    it "can deal with parens" $ do
+      pass1 "[x y] (x + y) / 2" `shouldBe` (Div (Add (Arg 0) (Arg 1)) (Imm 2))
+
+    it "supports multiple digits?" $ do
+      pass1 "[] 11" `shouldBe` (Imm 11)
