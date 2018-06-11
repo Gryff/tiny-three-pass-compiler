@@ -65,14 +65,15 @@ operatorTable =
   ]
   where op s f assoc = Infix (do{ string s; return f}) assoc
 
-factor = mybraces <|> arg <|> number <?> "failed at factor"
+factor = mybraces <|> arg <|> number <?> "failed at values"
 
 mybraces = toAst <$> between (char '(') (char ')') (many1 (digit <|> oneOf "-+*/"))
 
 mybrackets = between (char '[') (char ']') argsList <?> "failed at braces"
 
 argsList = do
-  args <- spaces *> sepBy (many1 letter) spaces
+  spaces
+  args <- (many1 letter) `endBy` spaces
   setState args
   return $ Imm 1
 
