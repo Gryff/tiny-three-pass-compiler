@@ -19,20 +19,20 @@ spec = do
       pass1 "[] 1 - 2" `shouldBe` (Sub (Imm 1) (Imm 2))
 
     it "deals with double subtraction (no arguments)" $ do
-      pass1 "[] 1 - 2 - 3" `shouldBe` (Sub (Imm 1) (Sub (Imm 2) (Imm 3)))
-      pass1 "[] 1 - 2 - 3 - 4" `shouldBe` (Sub (Imm 1) (Sub (Imm 2) (Sub (Imm 3) (Imm 4))))
+      pass1 "[] 1 - 2 - 3" `shouldBe` (Sub (Sub (Imm 1) (Imm 2)) (Imm 3))
+      pass1 "[] 1 - 2 - 3 - 4" `shouldBe` (Sub (Sub (Sub (Imm 1) (Imm 2)) (Imm 3)) (Imm 4))
 
     it "deals with addition (no arguments)" $ do
       pass1 "[] 1 + 2" `shouldBe` (Add (Imm 1) (Imm 2))
-      pass1 "[] 1 + 2 + 3" `shouldBe` (Add (Imm 1) (Add (Imm 2) (Imm 3)))
+      pass1 "[] 1 + 2 + 3" `shouldBe` (Add (Add (Imm 1) (Imm 2)) (Imm 3))
 
     it "deals with multiplication (no arguments)" $ do
       pass1 "[] 1 * 2" `shouldBe` (Mul (Imm 1) (Imm 2))
-      pass1 "[] 1 * 2 * 3" `shouldBe` (Mul (Imm 1) (Mul (Imm 2) (Imm 3)))
+      pass1 "[] 1 * 2 * 3" `shouldBe` (Mul (Mul (Imm 1) (Imm 2)) (Imm 3))
 
     it "deals with division (no arguments)" $ do
       pass1 "[] 1 / 2" `shouldBe` (Div (Imm 1) (Imm 2))
-      pass1 "[] 1 / 2 / 3" `shouldBe` (Div (Imm 1) (Div (Imm 2) (Imm 3)))
+      pass1 "[] 1 / 2 / 3" `shouldBe` (Div (Div (Imm 1) (Imm 2)) (Imm 3))
 
     it "can add and subtract in the same expression" $ do
       pass1 "[] 1 - 2 + 3" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Imm 3)))
@@ -51,7 +51,7 @@ spec = do
 
     it "can use arguments with other arguments in the expressions" $ do
       pass1 "[x y] x + y" `shouldBe` (Add (Arg 0) (Arg 1))
-      pass1 "[x y z] z + y - 1" `shouldBe` (Add (Arg 2) (Sub (Arg 1) (Imm 1)))
+      pass1 "[x y z] z + y - 1" `shouldBe` (Sub (Add (Arg 2) (Arg 1)) (Imm 1))
 
     it "can deal with parens" $ do
       pass1 "[x y] (x + y) / 2" `shouldBe` (Div (Add (Arg 0) (Arg 1)) (Imm 2))
