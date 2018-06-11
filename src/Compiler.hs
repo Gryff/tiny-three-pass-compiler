@@ -60,9 +60,9 @@ operatorTable =
   ]
   where op s f assoc = Infix (do{ string s; return f}) assoc
 
-factor = mybraces <|> arg <|> number <?> "failed at values"
+factor = mybraces expression <|> arg <|> number <?> "failed at values"
 
-mybraces = toAst <$> between (char '(') (char ')') (many1 (digit <|> oneOf "-+*/"))
+mybraces = between (char '(') (char ')')
 
 mybrackets = between (char '[') (char ']') argsList <?> "failed at braces"
 
