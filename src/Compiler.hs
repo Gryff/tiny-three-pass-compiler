@@ -25,16 +25,11 @@ data Token = TChar Char
            deriving (Eq, Ord, Show)
 
 pass1 :: String -> AST
-pass1 x = pass1' arguments body
+pass1 s = go $ runParse s
   where
-    arguments = (pass1arguments . tokenise . tail . head . (S.splitOn "]")) x
-    body = (tokenise . last . (S.splitOn "]")) x
-
-pass1arguments :: [Token] -> Map.Map Token AST
-pass1arguments ts = foldl storeArg Map.empty (zip [0..] ts)
-  where
-    storeArg tMap (idx, TStr t) = Map.insert (TStr t) (Arg idx) tMap
-    storeArg _ _ = Map.empty
+    go (Right ast) = ast
+    go (Left err) = error "something happened and I can't get the error"
+    runParse s = runParser (mybrackets *> spaces *> expression) [] "" s 
 
 pass1' :: Map.Map Token AST -> [Token] -> AST
 pass1' _ (TInt x : []) = Imm x
