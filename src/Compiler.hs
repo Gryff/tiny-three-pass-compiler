@@ -44,8 +44,13 @@ pass2 (Add x y) = recursivePass2 (Add) x y
 pass2 (Sub x y) = recursivePass2 (Sub) x y
 
 pass3 :: AST -> [String]
-pass3 (Imm x) = ["IM " ++ show x]
-pass3 (Arg x) = ["AR " ++ show x]
+pass3 (Imm x) = [pass3Value (Imm x)]
+pass3 (Arg x) = [pass3Value (Arg x)]
+pass3 (Add x y) = [pass3Value x, "SW", pass3Value y, "AD"]
+
+pass3Value :: AST -> String
+pass3Value (Imm x) = "IM " ++ show x
+pass3Value (Arg x) = "AR " ++ show x
 
 recursivePass2 :: (AST -> AST -> AST) -> AST -> AST -> AST
 recursivePass2 op x y
