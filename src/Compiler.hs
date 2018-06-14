@@ -46,7 +46,23 @@ pass2 (Sub x y) = recursivePass2 (Sub) x y
 pass3 :: AST -> [String]
 pass3 (Imm x) = [pass3Value (Imm x)]
 pass3 (Arg x) = [pass3Value (Arg x)]
-pass3 (Add x y) = [pass3Value x, "SW", pass3Value y, "AD"]
+pass3 (Add x y) = pass3Operation "AD" x y
+pass3 (Sub x y) = pass3Operation "SU" x y
+pass3 (Mul x y) = pass3Operation "MU" x y
+pass3 (Div x y) = pass3Operation "DI" x y
+
+pass3Operation :: String -> AST -> AST -> [String]
+pass3Operation op x y = concat [pass3 x, [if simple x then "SW" else "PU"], pass3 y, operate op y]
+
+operate :: String -> AST -> [String]
+operate op x
+  | simple x = [op]
+  | otherwise = ["SW", "PO", op]
+
+simple :: AST -> Bool
+simple (Imm _) = True
+simple (Arg _) = True
+simple _ = False
 
 pass3Value :: AST -> String
 pass3Value (Imm x) = "IM " ++ show x

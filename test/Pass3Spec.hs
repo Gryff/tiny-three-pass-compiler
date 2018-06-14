@@ -18,3 +18,9 @@ spec = do
     it "adds simple stuff" $ do
       pass3 (Add (Imm 3) (Arg 0)) `shouldBe` ["IM 3", "SW", "AR 0", "AD"]
 
+    it "multiplies simple stuff" $ do
+      pass3 (Mul (Imm 3) (Arg 0)) `shouldBe` ["IM 3", "SW", "AR 0", "MU"]
+
+    it "2*3 + 4*5" $ do
+      pass3 (Add (Mul (Imm 2) (Imm 3)) (Mul (Imm 4) (Imm 5))) `shouldBe` ["IM 2", "SW", "IM 3", "MU", "PU", "IM 4", "SW", "IM 5", "MU", "SW", "PO", "AD"]
+
