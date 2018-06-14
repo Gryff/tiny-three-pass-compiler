@@ -32,7 +32,7 @@ pass1 s = go $ runParse (removeSpaces s)
     runParse s = runParser (mybrackets *> spaces *> expression) [] "" s
 
 pass2 :: AST -> AST
-pass2 ast = Imm 10
+pass2 (Mul (Imm x)  (Imm y)) = Imm (x * y)
 
 removeSpaces s = args ++ "]" ++ (filter (not . (`elem` " ")) body)
   where
