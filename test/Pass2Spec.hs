@@ -29,3 +29,15 @@ spec = do
       pass2 (Mul (Imm 2) (Mul (Imm 5) (Imm 3))) `shouldBe` (Imm 30)
       pass2 (Mul (Mul (Mul (Imm 2) (Imm 5)) (Imm 3)) (Imm 10)) `shouldBe` (Imm 300)
 
+    it "reduces a mix of values and arguments (multiplication)" $ do
+      pass2 (Mul (Mul (Imm 2) (Imm 5)) (Arg 0)) `shouldBe` (Mul (Imm 10) (Arg 0))
+
+    it "reduces simple subtraction" $ do
+      pass2 (Sub (Imm 5) (Imm 2)) `shouldBe` (Imm 3)
+
+    it "reduces simple addition" $ do
+      pass2 (Add (Imm 2) (Imm 5)) `shouldBe` (Imm 7)
+
+    it "reduces simple division" $ do
+      pass2 (Div (Imm 10) (Imm 5)) `shouldBe` (Imm 2)
+

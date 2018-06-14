@@ -35,9 +35,18 @@ pass2 :: AST -> AST
 pass2 (Imm x) = Imm x
 pass2 (Arg x) = Arg x
 pass2 (Mul (Imm x) (Imm y)) = Imm (x * y)
-pass2 (Mul x y)
-  | collapsible nextPassX nextPassY = pass2 (Mul nextPassX nextPassY)
-  | otherwise = Mul nextPassX nextPassY
+pass2 (Div (Imm x) (Imm y)) = Imm (x `div` y)
+pass2 (Add (Imm x) (Imm y)) = Imm (x + y)
+pass2 (Sub (Imm x) (Imm y)) = Imm (x - y)
+pass2 (Mul x y) = recursivePass2 (Mul) x y
+pass2 (Div x y) = recursivePass2 (Div) x y
+pass2 (Add x y) = recursivePass2 (Add) x y
+pass2 (Sub x y) = recursivePass2 (Sub) x y
+
+recursivePass2 :: (AST -> AST -> AST) -> AST -> AST -> AST
+recursivePass2 op x y
+  | collapsible nextPassX nextPassY = pass2 (op nextPassX nextPassY)
+  | otherwise = op nextPassX nextPassY
   where
     nextPassX = pass2 x
     nextPassY = pass2 y
