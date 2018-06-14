@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module Compiler (pass1, pass2, AST (..))  where
+module Compiler (pass1, pass2, pass3, AST (..))  where
 
 import Data.List (elemIndex)
 import qualified Data.List.Split as S
@@ -42,6 +42,9 @@ pass2 (Mul x y) = recursivePass2 (Mul) x y
 pass2 (Div x y) = recursivePass2 (Div) x y
 pass2 (Add x y) = recursivePass2 (Add) x y
 pass2 (Sub x y) = recursivePass2 (Sub) x y
+
+pass3 :: AST -> [String]
+pass3 ast = ["IM 2"]
 
 recursivePass2 :: (AST -> AST -> AST) -> AST -> AST -> AST
 recursivePass2 op x y
