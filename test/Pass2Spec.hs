@@ -26,4 +26,5 @@ spec = do
 
     it "reduces nested multiplications" $ do
       pass2 (Mul (Mul (Imm 2) (Imm 5)) (Imm 3)) `shouldBe` (Imm 30)
+      pass2 (Mul (Imm 2) (Mul (Imm 5) (Imm 3))) `shouldBe` (Imm 30)
 
