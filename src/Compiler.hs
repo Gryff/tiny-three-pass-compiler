@@ -68,7 +68,7 @@ factor = mybraces expression <|> arg <|> number <?> "failed at values"
 
 mybraces = between (char '(') (char ')')
 
-mybrackets = between (char '[') (char ']') argsList <?> "failed at braces"
+mybrackets = between (char '[') (char ']') argsList <?> "failed at parsing arguments"
 
 argsList = do
   spaces
