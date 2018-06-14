@@ -35,8 +35,8 @@ pass2 :: AST -> AST
 pass2 (Imm x) = Imm x
 pass2 (Arg x) = Arg x
 pass2 (Mul (Imm x)  (Imm y)) = Imm (x * y)
-pass2 (Mul (Arg x)  (Imm y)) = (Mul (Arg x)  (Imm y))
-pass2 (Mul (Imm x)  (Arg y)) = (Mul (Imm x)  (Arg y))
+pass2 (Mul (Arg x)  y) = Mul (Arg x)  (pass2 y)
+pass2 (Mul x (Arg y)) = Mul (pass2 x) (Arg y)
 
 removeSpaces s = args ++ "]" ++ (filter (not . (`elem` " ")) body)
   where
