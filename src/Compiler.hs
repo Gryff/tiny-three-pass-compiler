@@ -34,9 +34,17 @@ pass1 s = go $ runParse (removeSpaces s)
 pass2 :: AST -> AST
 pass2 (Imm x) = Imm x
 pass2 (Arg x) = Arg x
-pass2 (Mul (Imm x)  (Imm y)) = Imm (x * y)
-pass2 (Mul (Arg x)  y) = Mul (Arg x)  (pass2 y)
-pass2 (Mul x (Arg y)) = Mul (pass2 x) (Arg y)
+pass2 (Mul (Imm x) (Imm y)) = Imm (x * y)
+pass2 (Mul x y)
+  | collapsible nextPassX nextPassY = pass2 (Mul nextPassX nextPassY)
+  | otherwise = Mul nextPassX nextPassY
+  where
+    nextPassX = pass2 x
+    nextPassY = pass2 y
+
+collapsible :: AST -> AST -> Bool
+collapsible (Imm _) (Imm _) = True
+collapsible _ _ = False
 
 removeSpaces s = args ++ "]" ++ (filter (not . (`elem` " ")) body)
   where
