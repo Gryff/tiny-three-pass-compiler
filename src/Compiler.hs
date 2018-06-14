@@ -1,7 +1,7 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module Compiler (pass1, AST (..))  where
+module Compiler (pass1, pass2, AST (..))  where
 
 import Data.List (elemIndex)
 import qualified Data.List.Split as S
@@ -30,6 +30,9 @@ pass1 s = go $ runParse (removeSpaces s)
     go (Right ast) = ast
     go (Left err) = error "something happened and I can't get the error"
     runParse s = runParser (mybrackets *> spaces *> expression) [] "" s
+
+pass2 :: AST -> AST
+pass2 ast = Imm 10
 
 removeSpaces s = args ++ "]" ++ (filter (not . (`elem` " ")) body)
   where
