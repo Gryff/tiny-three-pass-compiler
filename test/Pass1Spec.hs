@@ -1,4 +1,4 @@
-module CompilerSpec (main, spec) where
+module Pass1Spec (main, spec) where
 
 import Test.Hspec
 import Test.QuickCheck
