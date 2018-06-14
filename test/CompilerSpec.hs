@@ -35,10 +35,10 @@ spec = do
       pass1 "[] 1 / 2 / 3" `shouldBe` (Div (Div (Imm 1) (Imm 2)) (Imm 3))
 
     it "can add and subtract in the same expression" $ do
-      pass1 "[] 1 - 2 + 3" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Imm 3)))
+      pass1 "[] 1 - 2 + 3" `shouldBe` (Add (Sub (Imm 1) (Imm 2)) (Imm 3))
 
     it "can mix all the operations" $ do
-      pass1 "[] 1 - 2 + 3 * 4 / 5" `shouldBe` (Sub (Imm 1) (Add (Imm 2) (Mul (Imm 3) (Div (Imm 4) (Imm 5)))))
+      pass1 "[] 1 - 2 + 3 * 4 / 5" `shouldBe` (Add (Sub (Imm 1) (Imm 2)) (Div (Mul (Imm 3) (Imm 4)) (Imm 5)))
 
     it "can return arguments" $ do
       pass1 "[x] x" `shouldBe` (Arg 0)
@@ -58,3 +58,7 @@ spec = do
 
     it "supports multiple digits?" $ do
       pass1 "[] 11" `shouldBe` (Imm 11)
+
+    it "failing test from codewars" $ do
+      pass1 "[ x y z ] x - y - z + 10 / 5 / 2 - 7 / 1 / 7" `shouldBe` Sub (Add (Sub (Sub (Arg 0) (Arg 1)) (Arg 2)) (Div (Div (Imm 10) (Imm 5)) (Imm 2))) (Div (Div (Imm 7) (Imm 1)) (Imm 7))
+

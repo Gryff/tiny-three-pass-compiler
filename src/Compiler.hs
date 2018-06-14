@@ -59,10 +59,8 @@ expression = buildExpressionParser operatorTable factor <?> "expression parse fa
 
 operatorTable =
   [
-    [op "/" (Div) AssocLeft],
-    [op "*" (Mul) AssocLeft],
-    [op "+" (Add) AssocLeft],
-    [op "-" (Sub) AssocLeft]
+    [op "/" (Div) AssocLeft, op "*" (Mul) AssocLeft],
+    [op "+" (Add) AssocLeft, op "-" (Sub) AssocLeft]
   ]
   where op s f assoc = Infix (do{ string s; return f}) assoc
 
