@@ -18,3 +18,6 @@ spec = do
     it "reduces simple multiplication" $ do
       pass2 (Mul (Imm 2) (Imm 5)) `shouldBe` (Imm 10)
 
+    it "doesn't reduce simple multiplication with args" $ do
+      pass2 (Mul (Arg 0) (Imm 5)) `shouldBe` (Mul (Arg 0) (Imm 5))
+
