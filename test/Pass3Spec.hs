@@ -30,3 +30,9 @@ spec = do
     it "simple division" $ do
       pass3 (Div (Arg 0) (Arg 1)) `shouldBe` ["AR 1", "SW", "AR 0", "DI"]
 
+    it "(-1)+(-1) - 0*(-1)" $ do
+      pass3 (Sub (Add (Imm (-1)) (Imm (-1))) (Mul (Imm 0) (Imm (-1)))) `shouldBe` ["IM -1","SW","IM -1","AD","PU","IM 0","SW","IM -1","MU","SW","PO","SU"]
+
+    it "((-1)*2) / (2*(-2))" $ do
+      pass3 (Div (Mul (Imm (-1)) (Imm 2)) (Mul (Imm 2) (Imm (-2)))) `shouldBe` ["IM -1","SW","IM 2","MU","PU","IM 2","SW","IM -2","MU","SW","PO","DI"]
+
