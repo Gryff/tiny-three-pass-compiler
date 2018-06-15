@@ -24,3 +24,9 @@ spec = do
     it "2*3 + 4*5" $ do
       pass3 (Add (Mul (Imm 2) (Imm 3)) (Mul (Imm 4) (Imm 5))) `shouldBe` ["IM 2", "SW", "IM 3", "MU", "PU", "IM 4", "SW", "IM 5", "MU", "SW", "PO", "AD"]
 
+    it "simple subtraction" $ do
+      pass3 (Sub (Arg 0) (Arg 1)) `shouldBe` ["AR 1", "SW", "AR 0", "SU"]
+
+    it "simple division" $ do
+      pass3 (Div (Arg 0) (Arg 1)) `shouldBe` ["AR 1", "SW", "AR 0", "DI"]
+

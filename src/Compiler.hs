@@ -47,9 +47,9 @@ pass3 :: AST -> [String]
 pass3 (Imm x) = [pass3Value (Imm x)]
 pass3 (Arg x) = [pass3Value (Arg x)]
 pass3 (Add x y) = pass3Operation "AD" x y
-pass3 (Sub x y) = pass3Operation "SU" x y
+pass3 (Sub x y) = pass3Operation "SU" y x
 pass3 (Mul x y) = pass3Operation "MU" x y
-pass3 (Div x y) = pass3Operation "DI" x y
+pass3 (Div x y) = pass3Operation "DI" y x
 
 pass3Operation :: String -> AST -> AST -> [String]
 pass3Operation op x y = concat [pass3 x, [if simple x then "SW" else "PU"], pass3 y, operate op y]
