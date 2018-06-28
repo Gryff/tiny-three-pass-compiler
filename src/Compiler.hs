@@ -29,7 +29,7 @@ pass1 :: String -> AST
 pass1 s = go $ runParse (removeSpaces s)
   where
     go (Right ast) = ast
-    runParse s = runParser (mybrackets *> spaces *> expression) [] "" s
+    runParse s = runParser (parseArgs *> spaces *> expression) [] "" s
 
 pass2 :: AST -> AST
 pass2 (Imm x) = Imm x
@@ -113,7 +113,7 @@ toAst :: String -> AST
 toAst s = pass1' Map.empty (tokenise s)
 
 expression :: Monad m => ParsecT String [String] m AST
-expression = buildExpressionParser operatorTable factor <?> "expression parse failed"
+expression = buildExpressionParser operatorTable factor <?> "failed parsing expression"
 
 operatorTable =
   [
@@ -122,11 +122,11 @@ operatorTable =
   ]
   where op s f assoc = Infix (do{ string s; return f}) assoc
 
-factor = mybraces expression <|> arg <|> number <?> "failed at values"
+factor = braces expression <|> arg <|> number <?> "failed parsing factor"
 
-mybraces = between (char '(') (char ')')
+braces = between (char '(') (char ')')
 
-mybrackets = between (char '[') (char ']') argsList <?> "failed at parsing arguments"
+parseArgs = between (char '[') (char ']') argsList <?> "failed parsing arguments"
 
 argsList = do
   spaces
