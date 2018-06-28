@@ -46,14 +46,18 @@ pass2 (Sub x y) = recursivePass2 (Sub) x y
 pass3 :: AST -> [String]
 pass3 (Imm x) = ["IM " ++ show x]
 pass3 (Arg x) = ["AR " ++ show x]
-pass3 (Add x y) = pass3Operation "AD" x y
-pass3 (Sub x y)
-  | simple x = pass3Operation "SU" y x
-  | otherwise = pass3Operation "SU" x y
-pass3 (Mul x y) = pass3Operation "MU" x y
-pass3 (Div x y)
-  | simple x = pass3Operation "DI" y x
-  | otherwise = pass3Operation "DI" x y
+pass3 (Add x y) = commutativeOp "AD" x y
+pass3 (Mul x y) = commutativeOp "MU" x y
+pass3 (Sub x y) = nonCommutativeOp "SU" x y
+pass3 (Div x y) = nonCommutativeOp "DI" x y
+
+commutativeOp :: String -> AST -> AST -> [String]
+commutativeOp op x y = pass3Operation op x y
+
+nonCommutativeOp :: String -> AST -> AST -> [String]
+nonCommutativeOp op x y
+  | simple x = pass3Operation op y x
+  | otherwise = pass3Operation op x y
 
 pass3Operation :: String -> AST -> AST -> [String]
 pass3Operation op x y = concat [pass3 x, pushOrSwap x, pass3 y, operate op x y]
