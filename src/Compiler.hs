@@ -141,7 +141,6 @@ arg = do
   return $ idx (elemIndex arg argsList)
   where
     idx (Just x) = Arg x
-    idx Nothing = error "this should not happen"
 
 number = digitToToken <$> (many1 digit) <?> "failed at number"
 
