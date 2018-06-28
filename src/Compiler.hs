@@ -1,15 +1,13 @@
 {-# LANGUAGE FlexibleContexts #-}
 {-# LANGUAGE NoMonomorphismRestriction #-}
 
-module Compiler (pass1, pass2, pass3, AST (..))  where
+module Compiler (compile, pass1, pass2, pass3, AST (..))  where
 
 import Data.List (elemIndex)
 import qualified Data.List.Split as S
 import qualified Data.Map.Strict as Map
 import Text.Parsec
-import Text.Parsec.Language
 import Text.Parsec.Expr
-import Text.Parsec.Token
 
 data AST = Imm Int
          | Arg Int
@@ -24,11 +22,13 @@ data Token = TChar Char
            | TStr String
            deriving (Eq, Ord, Show)
 
+compile :: String -> [String]
+compile = pass3 . pass2 . pass1
+
 pass1 :: String -> AST
 pass1 s = go $ runParse (removeSpaces s)
   where
     go (Right ast) = ast
-    go (Left err) = error "something happened and I can't get the error"
     runParse s = runParser (mybrackets *> spaces *> expression) [] "" s
 
 pass2 :: AST -> AST
@@ -44,8 +44,8 @@ pass2 (Add x y) = recursivePass2 (Add) x y
 pass2 (Sub x y) = recursivePass2 (Sub) x y
 
 pass3 :: AST -> [String]
-pass3 (Imm x) = [pass3Value (Imm x)]
-pass3 (Arg x) = [pass3Value (Arg x)]
+pass3 (Imm x) = ["IM " ++ show x]
+pass3 (Arg x) = ["AR " ++ show x]
 pass3 (Add x y) = pass3Operation "AD" x y
 pass3 (Sub x y)
   | simple x = pass3Operation "SU" y x
@@ -56,21 +56,22 @@ pass3 (Div x y)
   | otherwise = pass3Operation "DI" x y
 
 pass3Operation :: String -> AST -> AST -> [String]
-pass3Operation op x y = concat [pass3 x, [if simple x then "SW" else "PU"], pass3 y, operate op y]
+pass3Operation op x y = concat [pass3 x, pushOrSwap x, pass3 y, operate op x y]
 
-operate :: String -> AST -> [String]
-operate op x
-  | simple x = [op]
+pushOrSwap :: AST -> [String]
+pushOrSwap (Imm _) = ["SW"]
+pushOrSwap (Arg _) = ["SW"]
+pushOrSwap _ = ["PU"]
+
+operate :: String -> AST -> AST -> [String]
+operate op x y
+  | simple x && simple y = [op]
   | otherwise = ["SW", "PO", op]
 
 simple :: AST -> Bool
 simple (Imm _) = True
 simple (Arg _) = True
 simple _ = False
-
-pass3Value :: AST -> String
-pass3Value (Imm x) = "IM " ++ show x
-pass3Value (Arg x) = "AR " ++ show x
 
 recursivePass2 :: (AST -> AST -> AST) -> AST -> AST -> AST
 recursivePass2 op x y
